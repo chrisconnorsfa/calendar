@@ -58,8 +58,8 @@ app.controller("weekTimeCtrl", function($scope, lookupService, timeService) {
     $scope.remove = function(user,entry){
         
         timeService.remove(user,entry).success(function(data){
-            
-            $scope.projectSummaries = data.weekRows;
+            $scope.dayData = data.daySummary.entries;
+            $scope.projectSummaries = data.weekSummary.weekSummary;
         });
         
         

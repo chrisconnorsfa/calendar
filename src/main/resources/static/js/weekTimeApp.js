@@ -48,7 +48,18 @@ app.service('timeService', function($http, responseService) {
     
     this.remove = function(userId, taskId){
         var urlString = '/entries/deleteSingle/'+userId+'/'+taskId; 
-        $http.post(urlString); 
+        $http.post(urlString, jsonOutput).
+            then(function(response) {
+              // this callback will be called asynchronously
+              // when the response is available
+              // updateTable(userId, startDate);
+     
+              return response.data;
+            }, function(response) {
+              // called asynchronously if an error occurs
+              // or server returns response with an error status.
+              responseService.failure();
+            }); 
     };
     
     this.addDays = function(day1, day2, day3, day4, day5, day6, day7, startDate, userId, description, taskId) { 

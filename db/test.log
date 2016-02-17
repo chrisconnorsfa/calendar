@@ -1,4 +1,4 @@
-/*C32*/SET SCHEMA PUBLIC
+/*C12*/SET SCHEMA PUBLIC
 alter table entry drop constraint FK_8dy1jtp4hbme8h674s625o3wm
 alter table entry drop constraint FK_4vw553gbsc5jsdnjjpdb28kym
 alter table project drop constraint FK_h2vk3qdbma5oscrb8hj8e5cka

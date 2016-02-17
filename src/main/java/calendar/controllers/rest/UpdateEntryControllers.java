@@ -106,7 +106,7 @@ public class UpdateEntryControllers {
             throw new ForbiddenException("/deleteSingle/"+user.getId()+"/"+entryId);
         }
         
-        entryService.deleteSingle(entryId);
+        //entryService.deleteSingle(entryId);
         
         return buildResponse(user, task, date);
     }
