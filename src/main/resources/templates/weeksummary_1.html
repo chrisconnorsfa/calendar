@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <title>${user.firstName + ' '+user.lastName}</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <meta name="description" content=""/>
+        <meta name="author" content=""/>
+        <link rel="icon" href="../../favicon.ico"/>
+        <script src="/jquery/jquery-1.11.3.min.js"></script>
+            <!-- Custom styles for this template -->
+            <!-- Bootstrap core CSS -->
+        <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+        <!-- Bootstrap theme -->
+        <link href="/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet"/>    
+        <link rel="stylesheet" type="text/css" href="/css/jquery.dataTables.min.css"/>
+        <script type="text/javascript" language="javascript" src="/js/jquery.dataTables.min.js"></script>
+        <script src="/bootstrap/js/bootstrap.min.js"></script>
+
+         <link href="/css/main.css" rel="stylesheet"/>
+    </head>
+
+    
+      <body role="document">
+
+    <!-- Fixed navbar -->
+            <nav class="navbar navbar-inverse navbar-fixed-top">
+                <div class="container">
+                    <div class="navbar-header">
+
+                    </div>
+                </div>
+            </nav>
+                <div class="container">
+
+                    <div class="starter-template">
+                        <p th:text="${user.firstName + ' '+user.lastName}"></p>
+                        <p th:text="${weekBeginning}"></p>
+
+                        <table width="100%" id="table1">
+                            <thead>
+                                <th>Project</th>
+                                <th>Task</th>
+                                <th>Sun</th>
+                                <th>Mon</th>
+                                <th>Tue</th>
+                                <th>Wed</th>
+                                <th>Thu</th>
+                                <th>Fri</th>
+                                <th>Sat</th>
+                                <th>Week Total</th>
+                            </thead>
+                                <tr th:each="weekRow : ${allEntries}">
+                                    <td><p th:text="${weekRow.project.name}"></p></td>
+                                    <td><p th:text="${weekRow.task.description}"></p></td>
+                                    <td><a th:text="${weekRow.day1Total}" th:unless="${weekRow.day1Total == null}" onclick="javascript:test()"></a></td>
+                                    <td><a th:text="${weekRow.day2Total}" th:unless="${weekRow.day2Total == null}" ></a></td>
+                                    <td><a th:text="${weekRow.day3Total}" th:unless="${weekRow.day3Total == null}" ></a></td>
+                                    <td><a th:text="${weekRow.day4Total}" th:unless="${weekRow.day4Total == null}" ></a></td>
+                                    <td><a th:text="${weekRow.day5Total}" th:unless="${weekRow.day5Total == null}" ></a></td>
+                                    <td><a th:text="${weekRow.day6Total}" th:unless="${weekRow.day6Total == null}" ></a></td>
+                                    <td><a th:text="${weekRow.day7Total}" th:unless="${weekRow.day7Total == null}" ></a></td>
+                                    <td><a th:text="${weekRow.weekTotal}"></a></td>
+                                </tr>
+                        </table>
+                        <button type="button" class="btn btn-default">Add New</button>
+                        <table width="100%" id="table2">
+                            <tr>
+                                <td>Project</td><td><select class="form-control col-xs-4" id="addProject" /></td><td>Task</td><td><select class="form-control col-xs-4" id="addTask" /></td>                                    
+                            </tr>
+                            <tr>
+                                <td>Description</td><td colspan="3"><input value="" type="text" class="form-control" id="description" /></td>
+                            </tr>
+                        </table>
+                        <table width="100%" id="table3">
+                            <thead>
+                                <th>Sun</th>
+                                <th>Mon</th>
+                                <th>Tue</th>
+                                <th>Wed</th>
+                                <th>Thu</th>
+                                <th>Fri</th>
+                                <th>Sat</th>
+                                <th>Week Total</th>
+                            </thead>
+                                <tr >
+                                    <td><input value="0.0" type="text" class="form-control col-xs-2" id="addSun" /></td>
+                                    <td><input value="0.0" type="text" class="form-control col-xs-2" id="addMon" /></td>
+                                    <td><input value="0.0" type="text" class="form-control col-xs-2" id="addTue" /></td>
+                                    <td><input value="0.0" type="text" class="form-control col-xs-2" id="addWed" /></td>
+                                    <td><input value="0.0" type="text" class="form-control col-xs-2" id="addThu" /></td>
+                                    <td><input value="0.0" type="text" class="form-control col-xs-2" id="addFri" /></td>
+                                    <td><input value="0.0" type="text" class="form-control col-xs-2" id="addSat" /></td>
+                                    <td><DIV id="weekTotal"></DIV></td>
+                                </tr>
+                        </table>
+                        
+                    </div>
+                </div>    
+    </body>
+
+<script language = "javascript">
+$( document ).ready(function() {
+  // Handler for .ready() called.
+  defaultSelect ='--Please Select--';
+  $('#table1').DataTable();
+  initiateTasks();
+  populateProjects();
+  $('#addProject').change(function (){populateTask();});
+});
+
+
+</script>
+
+<script language = "javascript">
+    
+    function initiateTasks(){
+       select = document.getElementById('addTask');
+       select.options.add(new Option(defaultSelect, '0'));
+    }
+    
+    function populateProjects(){
+       
+        $.getJSON('/lookup/getProjects',
+             function(json) {
+                updateSelect(json, 'addProject');
+            });
+    }
+    
+    function populateTask(){
+        
+         var taskId = $('#addProject').val();
+         
+         if(taskId != null){
+            $.getJSON('/lookup/getTasksByProjectId/'+taskId,
+                function(json) {
+                   updateSelect(json, 'addTask');
+               });
+         }   
+    }
+
+    function updateSelect(json, elementId){
+        
+        var name, select, option;
+
+        // Get the raw DOM object for the select box
+        select = document.getElementById(elementId);
+        //select = $('#addProject');
+        
+        // Clear the old options
+        select.options.length = 0;
+        select.options.add(new Option(defaultSelect, '0'));
+        // Load the new options
+        for (name in json) { 
+          if (json.hasOwnProperty(name)) {
+            select.options.add(new Option(json[name], name));
+          }
+        }
+    }    
+    
+    
+</script>
+
+</html>

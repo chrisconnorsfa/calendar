@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <title>${user.firstName + ' '+user.lastName + }</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+
+    <body>
+    
+    <p th:text="${user.firstName + ' '+user.lastName}"></p>
+    <p th:text="${daySummary.date}"></p>
+    <p th:text="${daySummary.project.name}"></p>
+    <p th:text="${daySummary.task.description}"></p>
+        <table width="100%" id="table1">
+            <thead>
+                <th>Description</th>
+                <th>Time</th>
+                <th>Notes</th>            
+            </thead>
+                <tr th:each="entry : ${daySummary.entries}">
+                    <td><p th:text="${entry.reference}" th:unless="${entry.reference == null}"></p></td>
+                    <td><p th:text="${entry.hours}" th:unless="${entry.hours == null}" ></p></td>
+                    <td><p th:text="${entry.note}" th:unless="${entry.note == null}" ></p></td>                   
+                </tr>
+                <tr><td></td><td>Total</td><td><p th:text="${daySummary.total}" th:unless="${daySummary.total == null}"></p></td></tr>
+        </table>
+
+    
+        
+        
+    </body>
+
+<script language = "javascript">
+$( document ).ready(function() {
+  // Handler for .ready() called.
+  $('#table1').DataTable();
+  
+});
+</script>
+    
+</html>
